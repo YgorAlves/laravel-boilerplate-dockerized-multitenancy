@@ -51,7 +51,7 @@ Never throw an hardcoded error, if the exception does not exists in app/exceptio
 - [ ] -> Release (Jenkins)
 - [ ] -> Deploy (DC/OS, Docker, Aws, CI/CD)
 - [ ] -> Operate (Mesos, Ansible, Kubernetes)
-- [ ] -> Monitor ()Nagios, Splunk, Datadog
+- [ ] -> Monitor (Nagios, Splunk, Datadog)
 - [ ] -> 
 
 ## License
