@@ -1,0 +1,87 @@
+# For more information: https://laravel.com/docs/sail
+version: '3.7'
+
+services:
+    app:
+        build:
+            context: ./.docker/app/
+            dockerfile: Dockerfile
+        image: php8.1.8-fpm
+        ports:
+            - 80:80
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www
+        volumes:
+            - './:/var/www'
+        networks:
+            - saas
+        depends_on:
+            - nginx
+            - mysql
+            - redis
+
+    nginx:
+        image: nginx:1.23.0-alpine
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 8100:80
+        volumes:
+            - ./:/var/www
+            - ./.docker/nginx:/etc/nginx/conf.d
+        networks:
+            - saas
+
+    mysql:
+        image: mysql:8.0.29
+        command: mysqld --sql_mode="" --character-set-server=utf8mb4 --innodb-use-native-aio=0
+        restart: unless-stopped
+        tty: true
+        environment:
+            MYSQL_ROOT_PASSWORD: consys
+            MYSQL_PASSWORD: consys
+            MYSQL_USER: consys
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./.docker/mysql:/var/lib/mysql
+            - ./.docker/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - saas
+        # healthcheck:
+        #     test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+        #     retries: 3
+        #     timeout: 5s
+
+    redis:
+        image: 'redis:7.0.3-alpine'
+        ports:
+            - 6379:6379
+        volumes:
+            - ./.docker/redis/data:/data
+        networks:
+            - saas
+        # healthcheck:
+        #     test: ["CMD", "redis-cli", "ping"]
+        #     retries: 3
+        #     timeout: 5s
+
+    mailhog:
+        image: 'mailhog/mailhog:latest'
+        ports:
+            - 8025:8025
+        networks:
+            - saas
+
+    adminer:
+        image: adminer:latest
+        restart: unless-stopped
+        ports:
+            - 8008:8080
+        networks:
+            - saas
+
+networks:
+    saas:
+        driver: bridge
