@@ -13,14 +13,14 @@ class TenantsMigrate extends Command
      *
      * @var string
      */
-    protected $signature = 'tenants:migrate {tenant?} {--fresh} {--seed}';
+    protected $signature = 'tenants:migrate {tenantId?} {--fresh} {--seed}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command to migrate specific Tenant or all of them, if Tenant does not exist yet, creates the database';
+    protected $description = 'Command to migrate specific Tenant by providing tenantId or all of them, if Tenant does not exist yet, creates the database';
 
     /**
      * Execute the console command.
@@ -29,10 +29,10 @@ class TenantsMigrate extends Command
      */
     public function handle()
     {
-        if ($this->argument('tenant')) {
-            $tenant = Tenant::find($this->argument('tenant'));
+        if ($this->argument('tenantId')) {
+            $tenant = Tenant::find($this->argument('tenantId'));
             if (!$tenant) {
-                $this->line("Tenant #{$this->argument('tenant')} not found in database");
+                $this->line("Tenant #{$this->argument('tenantId')} not found in database");
                 return;
             }
             $this->migrate($tenant);
