@@ -5,8 +5,17 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class UserTest extends TestCase
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
     /**
      * A basic test example.
      *
