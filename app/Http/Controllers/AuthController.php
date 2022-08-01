@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\BadRequestException;
 use App\Exceptions\UnauthorizedException;
+use App\Exceptions\UnprocessableEntityException;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,10 +44,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-                'errors' => $validator->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException($validator->errors());
         }
 
         $token = Auth::attempt($validator->validated());
@@ -68,10 +67,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => Response::HTTP_BAD_REQUEST,
-                'errors' => $validator->errors()
-            ], Response::HTTP_BAD_REQUEST);
+            throw new BadRequestException($validator->errors());
         }
 
         $user = User::create([
